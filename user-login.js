@@ -1,15 +1,27 @@
 (function () {
     'use strict';
     module.exports = function(app){
+        var config = require('./config');
+        var responseSenders = require('./response-senders');
+
         app.get('/', function(req, res) {
-            res.send({message: 'hello world'});
+            responseSenders.send(res, 'hello world');
         });
+
         app.post('/users/login', function(req, res) {
-            if(req.body.username === 'drwho' && req.body.password === 'tardis'){
-                res.send({username:'drwho', balance: 20000, token:'f36bb73b-83cc-4539-aac0-893914bc73ec'});
+            if(req.body.username === config.userLogin.username && req.body.password === config.userLogin.password){
+                responseSenders.send(res, 'LoginSuccess', {user: config.user});
             }
             else {
-                res.sendStatus(401);
+                responseSenders.sendError(res, 401);
+            }
+        });
+
+        app.post('/users/logout', function(req, res) {
+            if (req.body.token === config.user.token) {
+                responseSenders.send(res, 'LogoutSuccess');
+            } else {
+                responseSenders.sendError(res, 400, 'Error logging out');
             }
         });
     };
