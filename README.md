@@ -17,7 +17,7 @@ The authentication message is as follows:
  body: {"username":"drwho", "password":"tardis123!"}
  ```
  A successful response will be: 
- '''
+ ```
  {
     "message": "LoginSuccess",
     "payload": {
@@ -28,5 +28,5 @@ The authentication message is as follows:
         }
     }
 }
- '''
- Or you'll get a 401 (unauthorized) error if the details are incorrect.
+ ```
+ Or you'll get a `401 (unauthorized)` error if the details are incorrect.
