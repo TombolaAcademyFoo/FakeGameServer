@@ -72,3 +72,27 @@ url: /game/next
     }
 }
  ```
+###Get Call
+This gets the call - the message doesn't change between calls, though repsonses can differ depending on the game stage.
+```
+method: post
+url: /game/getcall
+body: {"gameId":1, "userId":"drwho", "balance":19990, "callnumber":1}
+```
+The balance is there to calculate the new balance. When the server is better developed it will be unecessary. The call number is the number of the call you want to get, 1-indexed. As this is a bingo 90 game range 1--> 90.
+The *standard* response is the call:
+```
+{
+    "message": "Call",
+    "payload": {
+        "gameId": 1,
+        "callnumber": 1,
+        "call": 54,
+        "user": {
+            "username": "drwho",
+            "balance": 19990,
+            "token": "f36bb73b-83cc-4539-aac0-893914bc73ec"
+        }
+    }
+}
+```
