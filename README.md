@@ -8,7 +8,8 @@ The server is embryonic and has very little built in resilience when running -yo
 
 
 ##API Calls
-**Note** All request calls must have a content type of `application/json`
+**Note** All request calls must have a content type of `application/json`. Any calls for secured api urls must have a header 
+`x-token`, this must be the token issued at login, this includes the logout method.
 A basic and very/totally insecure authentication method has been adopted. The username is 'drwho' and the password 'tardis123!'.
 The authentication message is as follows:
 ### Login
@@ -30,3 +31,16 @@ The authentication message is as follows:
 }
  ```
  Or you'll get a `401 (unauthorized)` error if the details are incorrect.
+ 
+ ### Logout
+ The key detail is in the headers - the `x-token`, which should be the users 'secure' token issued at login. Any body is ignored.
+```
+ url: /users/login
+ ```
+ A successful response will be: 
+ ```
+ {
+    "message": "LogoutSuccess",
+}
+ ```
+ Or you'll get a `400 (Bad Request)` error if the token is missing or incorrect.
