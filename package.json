@@ -1,6 +1,6 @@
 {
   "name": "FakeGameServer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A fake bingo game server",
   "main": "bingo-server.js",
   "scripts": {

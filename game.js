@@ -35,10 +35,12 @@
                 response.call = config.game.calls[req.body.callnumber -1]; //1-->0 based
                 if(response.callnumber === config.game.lineCall){
                     response.user.balance += config.game.linePrize;
+                    response.winnerInfo= {linewinnername: config.user.username, lineprize: config.game.linePrize}
                     responseSenders.sendSecured(req, res, 'Line', response );
                 }
                 else if(response.callnumber === config.game.houseCall){
                     response.user.balance += config.game.housePrize;
+                    response.winnerInfo= {linewinnername: config.user.username, lineprize: config.game.linePrize, housewinnername:config.user.username, houseprize:config.game.housePrize}
                     responseSenders.sendSecured(req, res, 'Winner', response );
                 }
                 else{
