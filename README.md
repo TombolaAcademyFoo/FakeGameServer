@@ -15,11 +15,12 @@ A basic and very/totally insecure authentication method has been adopted. The us
 ### Login
 The login message is as follows:
 ```
- url: /users/login
- body: {"username":"drwho", "password":"tardis123!"}
- ```
- A successful response will be: 
- ```
+method: post
+url: /users/login
+body: {"username":"drwho", "password":"tardis123!"}
+```
+A successful response will be: 
+```
  {
     "message": "LoginSuccess",
     "payload": {
@@ -36,7 +37,8 @@ The login message is as follows:
 ###Logout
 The key detail is in the headers - the `x-token`, which should be the users 'secure' token issued at login. Any body is ignored.
 ```
- url: /users/login
+method: post
+url: /users/login
  ```
  A successful response will be: 
  ```
@@ -51,3 +53,22 @@ The key detail is in the headers - the `x-token`, which should be the users 'sec
     "payload": "Error logging out"
 }
 ```
+##Game Calls
+**All Game calls are sercured, worth re-stating you'll need the x-token header, or you'll just get a 401 (Unauthorized) response.**
+###Get Next Game
+Gets the number, pricing options and time of the next game. The time is really there for simulation purposes at the moment - you should show a countdown and start at the time. The start time is always the time the server recieved your request, plus ten seconds. In reality you get the calls immediately (and in any order).
+```
+method: get
+url: /game/next
+ ```
+  A successful response will be: 
+ ```
+ {
+    "message": "NextGame",
+    "payload": {
+        "gameId": 1,
+        "start": "2015-07-24T13:02:03.496Z",
+        "ticketPrice": 10
+    }
+}
+ ```
