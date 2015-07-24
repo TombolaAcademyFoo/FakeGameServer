@@ -7,13 +7,13 @@ The server is a non-REST API mirroring some of the features of the real game ser
 The server is embryonic and has very little built in resilience when running -you have been warned...
 
 
-##API Calls
+#API Calls
 **Note** All request calls must have a content type of `application/json`. Any calls for secured api urls must have a header 
 `x-token`, this must be the token issued at login, this includes the logout method.
 A basic and very/totally insecure authentication method has been adopted. The username is 'drwho' and the password 'tardis123!'.
-The authentication message is as follows:
-
+##Authentication
 ### Login
+The login message is as follows:
 ```
  url: /users/login
  body: {"username":"drwho", "password":"tardis123!"}
