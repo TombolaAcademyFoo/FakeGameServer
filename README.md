@@ -12,6 +12,7 @@ The server is embryonic and has very little built in resilience when running -yo
 `x-token`, this must be the token issued at login, this includes the logout method.
 A basic and very/totally insecure authentication method has been adopted. The username is 'drwho' and the password 'tardis123!'.
 The authentication message is as follows:
+
 ### Login
 ```
  url: /users/login
@@ -32,8 +33,8 @@ The authentication message is as follows:
  ```
  Or you'll get a `401 (unauthorized)` error if the details are incorrect.
  
- ### Logout
- The key detail is in the headers - the `x-token`, which should be the users 'secure' token issued at login. Any body is ignored.
+###Logout
+The key detail is in the headers - the `x-token`, which should be the users 'secure' token issued at login. Any body is ignored.
 ```
  url: /users/login
  ```
@@ -44,3 +45,9 @@ The authentication message is as follows:
 }
  ```
  Or you'll get a `400 (Bad Request)` error if the token is missing or incorrect.
+```
+{
+    "message": "Error",
+    "payload": "Error logging out"
+}
+```
