@@ -96,3 +96,45 @@ The *standard* response is the call:
     }
 }
 ```
+Depending on the stage in the game, any given call might be a line prize (in which case this will happen):
+```
+{
+    "message": "Line",
+    "payload": {
+        "gameId": 1,
+        "callnumber": 85,
+        "call": 5,
+        "user": {
+            "username": "drwho",
+            "balance": 19991,
+            "token": "f36bb73b-83cc-4539-aac0-893914bc73ec"
+        },
+        "winnerInfo": {
+            "linewinnername": "drwho",
+            "lineprize": 1
+        }
+    }
+}
+```
+When the game ends and the winner message is sent:
+```
+{
+    "message": "Winner",
+    "payload": {
+        "gameId": 1,
+        "callnumber": 89,
+        "call": 6,
+        "user": {
+            "username": "drwho",
+            "balance": 19995,
+            "token": "f36bb73b-83cc-4539-aac0-893914bc73ec"
+        },
+        "winnerInfo": {
+            "linewinnername": "drwho",
+            "lineprize": 1,
+            "housewinnername": "drwho",
+            "houseprize": 5
+        }
+    }
+}
+```
