@@ -18,7 +18,7 @@
         });
 
         app.post('/users/logout', function(req, res) {
-            if (req.body.token === config.user.token) {
+            if (req.get('x-token') === config.user.token) {
                 responseSenders.send(res, 'LogoutSuccess');
             } else {
                 responseSenders.sendError(res, 400, 'Error logging out');
