@@ -4,6 +4,11 @@
         var expressWinston = require('express-winston'),
             winston = require('winston');
 
+        app.use('*', function(req, res, next){
+            winston.log('info', 'REMOTE IP:' +  req.connection.remoteAddress);
+            next();
+        });
+
         app.use(expressWinston.errorLogger({
             transports: [
                 new winston.transports.Console({
