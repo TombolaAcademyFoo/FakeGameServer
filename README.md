@@ -38,7 +38,7 @@ A successful response will be:
 The key detail is in the headers - the `x-token`, which should be the users 'secure' token issued at login. Any body is ignored.
 ```
 method: post
-url: /users/login
+url: /users/logout
  ```
  A successful response will be: 
  ```
