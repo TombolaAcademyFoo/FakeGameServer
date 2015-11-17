@@ -8,11 +8,12 @@
         user: {
             username:'drwho', balance: 20000, token:'f36bb73b-83cc-4539-aac0-893914bc73ec'
         },
-        //bingo 90 game
-        //https://en.wikipedia.org/wiki/Bingo_card#75-ball_Bingo_Cards
+
         game : {
-            gameId : 1,
+            id:1,
             ticketPrice: 10,
+            //bingo 90 game
+            //https://en.wikipedia.org/wiki/Bingo_card#75-ball_Bingo_Cards
             card : '054963758028345266770611596982',
             calls: [ 54, 55, 82, 38, 75,
                      37, 73, 45, 12, 13,
@@ -35,8 +36,18 @@
             //calls 1-based (as opposed to 0-based)
             lineCall: 85,
             linePrize: 1,
+            lineWinner: 'drwho',
             houseCall: 89,
-            housePrize: 5
+            housePrize: 5,
+            houseWinner: 'drwho',
+            getCall: function(callNumber){
+                return this.calls[callNumber -1]; //Call 1 is index 0...
+            },
+            startTime: function() {
+                var nextGameTime = new Date();
+                nextGameTime.setSeconds(nextGameTime.getSeconds() + 10);
+                return nextGameTime;
+            }
         }
     };
 })();

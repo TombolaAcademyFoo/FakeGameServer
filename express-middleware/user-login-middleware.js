@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     module.exports = function(app){
-        var config = require('./config');
+        var config = require('./../config');
         var responseSenders = require('./response-senders');
 
         app.get('/', function(req, res) {
