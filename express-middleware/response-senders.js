@@ -17,7 +17,7 @@
             if(content){
                 res.send({message:message, payload: content});
             }
-            else {ƒ
+            else {
                 res.send({message:message});
             }
         },
