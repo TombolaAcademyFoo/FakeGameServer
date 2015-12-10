@@ -72,6 +72,28 @@ url: /game/next
     }
 }
  ```
+###Buy Ticket
+This is how you buy into a game
+```
+method: post
+url: /game/buyticket
+body: {"gameId":1, "userId":"drwho", "balance":20000}
+```
+At the current state of play, you'll only get the same card every time. The response looks like:
+```
+{
+    "message": "TicketBought",
+    "payload": {
+        "gameId": 1,
+        "card": "010203040506070809101112131415",
+        "user": {
+            "username": "mruser",
+            "balance": 2000,
+            "token": "fb00b53b-dead-beef-f00t-314156bcc4cec"
+        }
+    }
+}
+```
 ###Get Call
 This gets the call - the message doesn't change between calls, though repsonses can differ depending on the game stage.
 ```
