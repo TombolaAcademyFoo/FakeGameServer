@@ -35,10 +35,12 @@
         });
 
         app.post('/game/getcall', function(req, res) {
-            var gameId = req.body.gameId;
-            var callNumber = req.body.callnumber;
-            var balance = req.body.balance;
-            var username = req.body.userId;
+            var gameId = req.body.gameId,
+                callNumber = req.body.callnumber,
+                balance = req.body.balance,
+                username = req.body.userId,
+                lineFound = req.body.lineFound,
+                fullHouseFound = req.body.fullHouseFound;
 
             if(!validator.validGameId(res, gameId, 'gameId')){
                 return;
@@ -56,7 +58,7 @@
                 return;
             }
 
-            var response = game.getCall(gameId, callNumber, username, balance);
+            var response = game.getCall(gameId, callNumber, username, balance, lineFound, fullHouseFound);
 
             if(response.winnerInfo){
                 if(response.winnerInfo.housewinnername){
