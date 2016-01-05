@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var userToken = require('../config').user.token;
+    var databaseMiddleware = require('./database-middleware');
     module.exports = {
         sendError: function(res, code, content){
             if(!code){
@@ -22,8 +22,17 @@
             }
         },
         sendSecured: function (req, res, message, content){
-            if (req.get('x-token') === userToken) {
-                this.send(res, message, content);
+            var me = this;
+            if (req.get('x-token')) {
+                var sql = 'SELECT * FROM fakebingousers WHERE token = ' + databaseMiddleware.connection.escape(req.get('x-token'));
+                databaseMiddleware.connection.query(sql, function (err, response) {
+                    if (req.get('x-token') === response[0].token) {
+                        me.send(res, message, content);
+                    }
+                    else {
+                        me.sendError(res, 401);
+                    }
+                });
             }
             else {
                 this.sendError(res, 401);
