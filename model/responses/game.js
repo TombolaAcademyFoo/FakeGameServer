@@ -1,9 +1,13 @@
 (function () {
     'use strict';
-    var config = require('../../config');
+    var config = require('../../config'),
+        databaseMiddleware = require('../../express-middleware/database-middleware');
 
     var createUserResponse = function(username, balance){
-        return {username:username, balance: balance, token:config.user.token}
+        var sql = 'SELECT * FROM fakebingousers WHERE username = ' + databaseMiddleware.connection.escape(username);
+        databaseMiddleware.connection.query(sql, function (err, response) {
+            return {username:username, balance: balance, token: response.token}
+        });
     };
 
     var createLineWinner = function(){
@@ -17,13 +21,25 @@
         return winnerInfo;
     };
 
-    module.exports.getNext = function(){
-        return {gameId: config.game.id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
+    module.exports.getNext = function(gameToPlay){
+        var sql = 'SELECT * FROM bingogames WHERE id = ' + databaseMiddleware.connection.escape(gameToPlay);
+        databaseMiddleware.connection.query(sql, function (err, response) {
+            return {gameId: response.id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
+        });
     };
 
-    module.exports.buyTicket = function(username, currentBalance){
-        var newBalance = currentBalance - config.game.ticketPrice;
-        return {gameId: config.game.id, card: config.game.card, user: createUserResponse(username, newBalance)};
+    module.exports.buyTicket = function(username, currentBalance, gameId){
+        if (username && currentBalance) {
+            var sql = 'SELECT * FROM bingotickets WHERE id = ' + databaseMiddleware.connection.escape(gameId);
+            databaseMiddleware.connection.query(sql, function (err, response) {
+                var newBalance = currentBalance - config.game.ticketPrice;
+                return {gameId: gameId, card: response.card, user: createUserResponse(username, newBalance)};
+            });
+        }
+        else
+        {
+            return null;
+        }
     };
 
     module.exports.getCall = function(gameId, callNumber, username, balance){

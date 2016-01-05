@@ -23,7 +23,7 @@
         },
         sendSecured: function (req, res, message, content){
             var me = this;
-            if (req.get('x-token')) {
+            if (req.get('x-token') && content) {
                 var sql = 'SELECT * FROM fakebingousers WHERE token = ' + databaseMiddleware.connection.escape(req.get('x-token'));
                 databaseMiddleware.connection.query(sql, function (err, response) {
                     if (req.get('x-token') === response[0].token) {
