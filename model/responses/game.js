@@ -33,7 +33,7 @@
             response.user.balance += response.winnerInfo.lineprize;
         }
         else if(response.callnumber === config.game.houseCall){
-            response.winnerInfo= createHouseWinner()
+            response.winnerInfo= createHouseWinner();
             response.user.balance += response.winnerInfo.houseprize;
         }
         return response;
