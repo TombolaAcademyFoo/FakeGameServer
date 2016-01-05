@@ -22,7 +22,11 @@
     };
 
     var splitNumbersString = function (stringToSplit) {
-
+        var i, calls=[];
+        for (i = 0; i < stringToSplit.length; i+=2) {
+            calls.push(stringToSplit[i] + stringToSplit[i+1]);
+        }
+        return calls;
     };
 
     module.exports.getNext = function(gameToPlay){

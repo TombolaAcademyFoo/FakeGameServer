@@ -1,7 +1,8 @@
 (function () {
     'use strict';
-    var config = require('../config');
-    var responseSenders = require('./response-senders');
+    var config = require('../config'),
+        responseSenders = require('./response-senders'),
+        databaseMiddleware = require('./database-middleware');
 
     Number.isInteger = Number.isInteger || function(value) {
             return typeof value === "number" &&
@@ -34,22 +35,28 @@
             if(!this.integer(res,value, name)){
                 return false;
             }
-            valueAsNumber = Number(value);
-            if(valueAsNumber !== config.game.id){
-                responseSenders.send400Error(res, 'Invalid Game Id');
-                return false;
-            }
-            return true;
+            var sql = 'SELECT * FROM bingogames WHERE id = ' + databaseMiddleware.connection.escape(value);
+            databaseMiddleware.connection.query(sql, function (err, response) {
+                valueAsNumber = Number(value);
+                if(valueAsNumber !== response[0].id){
+                    responseSenders.send400Error(res, 'Invalid Game Id');
+                    return false;
+                }
+                return true;
+            });
         },
         username : function(res, value, name){
             if(!this.required(res,value, name)){
                 return false;
             }
-            if(value !== config.user.username){
-                responseSenders.send400Error(res, 'Invalid User Id');
-                return false;
-            }
-            return true;
+            var sql = 'SELECT * FROM fakebingousers WHERE username = ' + databaseMiddleware.connection.escape(value);
+            databaseMiddleware.connection.query(sql, function (err, response) {
+                if(value !== response[0].username){
+                    responseSenders.send400Error(res, 'Invalid User Id');
+                    return false;
+                }
+                return true;
+            });
         },
         callNumber: function(res, value, name){
             if(!this.integer(res,value, name)){
