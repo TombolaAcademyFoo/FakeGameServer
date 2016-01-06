@@ -22,7 +22,6 @@
             }
         },
         sendSecured: function (req, res, message, content){
-            console.log('Content = ' + content);
             var me = this;
             if (req.get('x-token') && content) {
                 var sql = 'SELECT * FROM fakebingousers WHERE token = ' + databaseMiddleware.connection.escape(req.get('x-token'));
