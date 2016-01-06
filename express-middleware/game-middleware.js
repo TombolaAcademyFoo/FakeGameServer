@@ -5,6 +5,7 @@
         var responseSenders = require('./response-senders');
         var validator = require('./validator');
         var game = require('../model/responses/game');
+        var http = require('./http-connections');
 
         app.get('/game/next', function(req, res) {
             responseSenders.sendSecured(req, res, 'NextGame', game.getNext());
