@@ -1,6 +1,7 @@
 (function () {
     'use strict';
     var config = require('../../config'),
+        responseSenders = require('../../express-middleware/response-senders'),
         databaseMiddleware = require('../../express-middleware/database-middleware');
 
     var createUserResponse = function(username, balance){
@@ -29,20 +30,22 @@
         return calls;
     };
 
-    module.exports.getNext = function(gameToPlay){
+    module.exports.getNext = function(gameToPlay, req, res){
         var sql = 'SELECT * FROM bingogames WHERE id = ' + databaseMiddleware.connection.escape(gameToPlay);
         databaseMiddleware.connection.query(sql, function (err, response) {
             config.game.calls = splitNumbersString(response[0].ordertocall);
-            return {gameId: response[0].id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
+            var content =  {gameId: response[0].id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
+            responseSenders.sendSecured(req, res, 'NextGame', content);
         });
     };
 
-    module.exports.buyTicket = function(username, currentBalance, gameId){
+    module.exports.buyTicket = function(username, currentBalance, gameId, req, res){
         if (username && currentBalance) {
             var sql = 'SELECT * FROM bingotickets WHERE id = ' + databaseMiddleware.connection.escape(gameId);
             databaseMiddleware.connection.query(sql, function (err, response) {
                 var newBalance = currentBalance - config.game.ticketPrice;
-                return {gameId: gameId, card: response[0].card, user: createUserResponse(username, newBalance)};
+                var content =  {gameId: gameId, card: response[0].card, user: createUserResponse(username, newBalance)};
+                responseSenders.sendSecured(req, res, 'TicketBought', content);
             });
         }
         else

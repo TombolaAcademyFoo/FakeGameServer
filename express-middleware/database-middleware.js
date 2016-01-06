@@ -1,7 +1,6 @@
 (function () {
     'use strict';
-    var game = require('../model/responses/game'),
-        mysql = require('mysql');
+    var mysql = require('mysql');
     module.exports = {
         connection: mysql.createConnection({
             host: process.env.taApiDBHost,

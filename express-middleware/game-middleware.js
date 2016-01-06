@@ -10,7 +10,7 @@
             var sql = 'SELECT * FROM bingogames';
             databaseMiddleware.connection.query(sql, function (err, response) {
                 var gameToPlay = Math.floor((Math.random() * response.length) + 1);
-                responseSenders.sendSecured(req, res, 'NextGame', game.getNext(gameToPlay));
+                game.getNext(gameToPlay, req, res)
             });
         });
 
@@ -31,7 +31,7 @@
                 return;
             }
 
-            responseSenders.sendSecured(req, res, 'TicketBought', game.buyTicket(username, balance, gameId));
+            game.buyTicket(username, balance, gameId, req, res);
         });
 
         app.post('/game/getcall', function(req, res) {
