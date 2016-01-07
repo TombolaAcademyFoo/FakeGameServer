@@ -10,9 +10,25 @@
         });
 
         app.post('/users/login', function(req, res) {
-            httpConnections.getAllFakeBingoUsers();
-            if(req.body.username === config.userLogin.username && req.body.password === config.userLogin.password){
-                responseSenders.send(res, 'LoginSuccess', {user: config.user});
+            var i;
+            if (req.body.username && req.body.password) {
+                httpConnections.getAll('fakebingousers', '').then(function (response) {
+                    console.log(response);
+                    for (i=0;i<response.length; i++) {
+                        if(response[i].username === req.body.username) {
+                            responseSenders.send(res, 'LoginSuccess', {user: {
+                                username: response[i].username,
+                                balance: response[i].balance,
+                                token: response[i].token
+                            }});
+                        }
+                        else {
+                            responseSenders.sendError(res, 401);
+                        }
+                    }
+                }).catch(function (error){
+                    console.log(error);
+                });
             }
             else {
                 responseSenders.sendError(res, 401);
