@@ -37,12 +37,12 @@
 
         getAllFakeBingoUsers: function () {
             options.path = '/api/fakebingousers';
-            options.method = 'POST';
+            options.method = 'GET';
             options.headers = {
-                //AUTH TOKEN
+                'x-access-token': this.token
             };
 
-            var callback = function (response) {
+            var request = https.request(options, function (response) {
                 var str = '';
 
                 response.on('data', function (chunk) {
@@ -50,13 +50,9 @@
                 });
 
                 response.on('end', function () {
-                    console.log('String = ' + str);
+                    console.log(JSON.parse(str).json);
                 });
-            };
-
-            var request = https.request(options, callback);
-
-            console.log(request);
+            });
 
             request.end();
         }
