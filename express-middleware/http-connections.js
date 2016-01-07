@@ -1,57 +1,55 @@
 (function () {
     'use strict';
-    var https = require('https'),
-        querystring = require('querystring'),
-        q = require('q'),
-        options = {
-            port: 3000,
-            host: 'eutaveg-01.tombola.emea'
-        },
-        performRequest = function (connectionMethod, token, endpoint, data) {
-            options.path = endpoint;
-            options.method = connectionMethod;
-            options.headers = {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': data.length,
-                'x-access-token': token
-            };
+    var https = require('https');
+    var requestOptionsFactory = require('./http-model/request-options-factory');
+    var Q = require('q');
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; //TODO: look into proper certs
 
-            var request,
-                deferred = q.defer();
+    var performRequest = function (method, endpoint, token, data) {
 
-            request = https.request(options, function (response) {
-                var str = '';
+        var deferred = Q.defer();
+        var request = https.request(requestOptionsFactory(method, endpoint, token), function (response) {
+            var str = '';
 
-                response.on('data', function (chunk) {
-                    str += chunk;
-                });
-
-                response.on('end', function () {
-                    this.token = JSON.parse(str).token;
-                });
+            response.on('data', function (chunk) {
+                str += chunk;
             });
 
-            if (data && options.method === 'POST') {
-                request.write(data);
-            }
-
-            request.end();
-
-        };
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-    module.exports = {
-        token: '',
-        authenticate: function () {
-            var postData = querystring.stringify({
-                'username': 'ta',
-                'password': 'tombola123'
+            response.on('error', function(err){
+               deferred.reject(err);
             });
 
-            return performRequest('POST', '', '/authenticate', postData);
-        },
-
-        getAllFakeBingoUsers: function () {
-            return performRequest('GET', this.token, '/api/fakebingousers');
+            response.on('end', function () {
+                if(response.statusCode===200){
+                    deferred.resolve(JSON.parse(str).json);
+                }
+                else{
+                    deferred.reject(str);
+                }
+            });
+        });
+        if (data) {
+            request.write(JSON.stringify(data));
         }
+        request.end();
+        return deferred.promise;
     };
+
+    module.exports = {
+        getAll: function(tableName, token){
+            return performRequest('GET', '/api/' + tableName, token);
+        },
+        getById: function(tableName, id, token){
+            return performRequest('GET', '/api/' + tableName + '/' + id, token);
+        },
+        add: function(tableName, token, data){
+            return performRequest('POST', '/api/' + tableName, token, data);
+        },
+        delete: function(tableName, id, token){
+            return performRequest('DELETE', '/api/' + tableName + '/' + id, token);
+        },
+        update: function(tableName, id, token, data){
+            return performRequest('PUT', '/api/' + tableName + '/' + id, token, data);
+        }
+    }
 })();
