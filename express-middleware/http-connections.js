@@ -2,24 +2,24 @@
     'use strict';
     var https = require('https'),
         querystring = require('querystring'),
+        q = require('q'),
         options = {
             port: 3000,
             host: 'eutaveg-01.tombola.emea'
-        };
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-    module.exports = {
-        token: '',
+        },
+        performRequest = function (connectionMethod, token, endpoint, data) {
+            options.path = endpoint;
+            options.method = connectionMethod;
+            options.headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': data.length,
+                'x-access-token': token
+            };
 
-        authenticate: function () {
-            var postData = querystring.stringify({
-                'username': 'ta',
-                'password': 'tombola123'
-            });
-            options.path = '/authenticate';
-            options.method = 'POST';
-            options.headers = {'Content-Type': 'application/x-www-form-urlencoded','Content-Length': postData.length};
+            var request,
+                deferred = q.defer();
 
-            var request = https.request(options, function (response) {
+            request = https.request(options, function (response) {
                 var str = '';
 
                 response.on('data', function (chunk) {
@@ -31,30 +31,27 @@
                 });
             });
 
-            request.write(postData);
+            if (data && options.method === 'POST') {
+                request.write(data);
+            }
+
             request.end();
+
+        };
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    module.exports = {
+        token: '',
+        authenticate: function () {
+            var postData = querystring.stringify({
+                'username': 'ta',
+                'password': 'tombola123'
+            });
+
+            return performRequest('POST', '', '/authenticate', postData);
         },
 
         getAllFakeBingoUsers: function () {
-            options.path = '/api/fakebingousers';
-            options.method = 'GET';
-            options.headers = {
-                'x-access-token': this.token
-            };
-
-            var request = https.request(options, function (response) {
-                var str = '';
-
-                response.on('data', function (chunk) {
-                    str += chunk;
-                });
-
-                response.on('end', function () {
-                    console.log(JSON.parse(str).json);
-                });
-            });
-
-            request.end();
+            return performRequest('GET', this.token, '/api/fakebingousers');
         }
     };
 })();
