@@ -9,23 +9,20 @@
             responseSenders.send(res, 'hello world');
         });
 
+
         app.post('/users/login', function(req, res) {
-            var i;
             if (req.body.username && req.body.password) {
-                httpConnections.getAll('fakebingousers').then(function (response) {
-                    console.log(response);
-                    for (i=0;i<response.length; i++) {
-                        if(response[i].username === req.body.username) {
-                            responseSenders.send(res, 'LoginSuccess', {user: {
-                                username: response[i].username,
-                                balance: response[i].balance,
-                                token: response[i].token
-                            }});
-                            break;
-                        }
-                        if (response[i].username !== req.body.username && i === response.length-1) {
-                            responseSenders.sendError(res, 401);
-                        }
+                httpConnections.getByData('fakebingousers', {username:req.body.username}).then(function (response) {
+                    if(response[0].username === req.body.username && response[0].password === req.body.password) {
+                        responseSenders.send(res, 'LoginSuccess', {user: {
+                            id: response[0].id,
+                            username: response[0].username,
+                            balance: response[0].balance,
+                            token: response[0].token
+                        }});
+                    }
+                    else {
+                        responseSenders.sendError(res, 401);
                     }
                 }).catch(function (error){
                     console.log(error);
@@ -37,10 +34,16 @@
         });
 
         app.post('/users/logout', function(req, res) {
-            if (req.get('x-token') === config.user.token) {
-                responseSenders.send(res, 'LogoutSuccess');
-            } else {
-                responseSenders.sendError(res, 400, 'Error logging out');
+            if (req.get('x-token')) {
+                httpConnections.getByData('fakebingousers', {token:req.get('x-token')}).then(function (response) {
+                    if (req.get('x-token') === response[0].token) {
+                        responseSenders.send(res, 'LogoutSuccess');
+                    } else {
+                        responseSenders.sendError(res, 400, 'Error logging out');
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
         });
     };

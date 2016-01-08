@@ -47,6 +47,17 @@
         getById: function(tableName, id){
             return performRequest('GET', '/api/' + tableName + '/' + id, this.token);
         },
+        getByData: function (tableName, data) {
+            var str = '';
+            for(var key in data) {
+                str += '&' + key + '=' + data[key];
+            }
+            console.log(str);
+            if (str) {
+                str[0] = '?';
+            }
+            return performRequest('GET', '/api/' + tableName + '?' + str, this.token);
+        },
         add: function(tableName, data){
             return performRequest('POST', '/api/' + tableName, this.token, data);
         },
