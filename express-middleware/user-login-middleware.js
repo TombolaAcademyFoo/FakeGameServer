@@ -12,7 +12,7 @@
         app.post('/users/login', function(req, res) {
             var i;
             if (req.body.username && req.body.password) {
-                httpConnections.getAll('fakebingousers', '').then(function (response) {
+                httpConnections.getAll('fakebingousers').then(function (response) {
                     console.log(response);
                     for (i=0;i<response.length; i++) {
                         if(response[i].username === req.body.username) {

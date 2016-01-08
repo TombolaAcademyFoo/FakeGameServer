@@ -1,13 +1,13 @@
 (function () {
     'use strict';
-    var express = require ('express'),
-        bodyParser = require('body-parser'),
-        logging = require('./core/logging'),
-        userLoginMiddleware = require('./express-middleware/user-login-middleware'),
-        gameMiddleware = require('./express-middleware/game-middleware'),
-        cors = require('./express-middleware/cors'),
-        connection = require('./express-middleware/http-connections'),
-        app = express();
+    var express = require ('express');
+    var bodyParser = require('body-parser');
+    var logging = require('./core/logging');
+    var userLoginMiddleware = require('./express-middleware/user-login-middleware');
+    var gameMiddleware = require('./express-middleware/game-middleware');
+    var cors = require('./express-middleware/cors');
+    var connection = require('./express-middleware/http-connections');
+    var app = express();
 
     app.use(bodyParser.json());
     app.all('/*', cors);
