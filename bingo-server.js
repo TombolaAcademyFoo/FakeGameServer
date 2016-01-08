@@ -6,7 +6,7 @@
     var userLoginMiddleware = require('./express-middleware/user-login-middleware');
     var gameMiddleware = require('./express-middleware/game-middleware');
     var cors = require('./express-middleware/cors');
-    var connection = require('./express-middleware/http-connections');
+    var httpConnections = require('./express-middleware/http-connections');
     var app = express();
 
     app.use(bodyParser.json());
@@ -14,8 +14,8 @@
     logging(app);
     userLoginMiddleware(app);
     gameMiddleware(app);
-    connection.auth({username:'ta', password:'tombola123'}).then(function (response) {
-        connection.token = response.token;
+    httpConnections.auth({username:'ta', password:'tombola123'}).then(function (response) {
+        httpConnections.token = response.token;
     }).catch(function (error) {
         console.log(error);
     });

@@ -5,10 +5,22 @@
         var responseSenders = require('./response-senders');
         var validator = require('./validator');
         var game = require('../model/responses/game');
-        var http = require('./http-connections');
+        var httpConnections = require('./http-connections');
 
         app.get('/game/next', function(req, res) {
-            responseSenders.sendSecured(req, res, 'NextGame', game.getNext());
+            var gameToPlay;
+            httpConnections.getAll('bingogames').then(function (response) {
+                gameToPlay = Math.floor((Math.random() * response.length)+1);
+                httpConnections.getById('bingogames', gameToPlay).then(function (response) {
+                    console.log(response);
+                    console.log(game.getNext(response));
+                    responseSenders.sendSecured(req, res, 'NextGame', game.getNext(response));
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
         });
 
         app.post('/game/buyticket', function(req, res) {

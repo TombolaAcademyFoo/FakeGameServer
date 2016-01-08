@@ -1,7 +1,8 @@
 (function () {
     'use strict';
-    var userToken = require('../config').user.token;
+    var httpConnections = require('./http-connections');
     module.exports = {
+        me: this,
         sendError: function(res, code, content){
             if(!code){
                 code = 400;
@@ -22,12 +23,17 @@
             }
         },
         sendSecured: function (req, res, message, content){
-            if (req.get('x-token') === userToken) {
-                this.send(res, message, content);
-            }
-            else {
-                this.sendError(res, 401);
-            }
+            var me = this;
+            httpConnections.getByData('fakebingousers', {token:req.get('x-token')}).then(function (response) {
+                if (req.get('x-token') === response[0].token) {
+                    me.send(res, message, content);
+                }
+                else {
+                    me.sendError(res, 401);
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         send400Error: function(res, content){
             this.sendError(res, 400, content);

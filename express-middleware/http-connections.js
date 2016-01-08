@@ -52,7 +52,6 @@
             for(var key in data) {
                 str += '&' + key + '=' + data[key];
             }
-            console.log(str);
             if (str) {
                 str[0] = '?';
             }

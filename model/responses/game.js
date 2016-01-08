@@ -17,8 +17,8 @@
         return winnerInfo;
     };
 
-    module.exports.getNext = function(){
-        return {gameId: config.game.id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
+    module.exports.getNext = function(data){
+        return {gameId: data[0].id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
     };
 
     module.exports.buyTicket = function(username, currentBalance){
@@ -33,7 +33,7 @@
             response.user.balance += response.winnerInfo.lineprize;
         }
         else if(response.callnumber === config.game.houseCall){
-            response.winnerInfo= createHouseWinner()
+            response.winnerInfo= createHouseWinner();
             response.user.balance += response.winnerInfo.houseprize;
         }
         return response;
