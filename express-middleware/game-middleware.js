@@ -24,23 +24,39 @@
         });
 
         app.post('/game/buyticket', function(req, res) {
-            var gameId = req.body.gameId;
-            var balance = req.body.balance;
-            var username = req.body.userId;
+            if (req.body.gameId && req.body.balance && req.body.userId) {
+                var gameId = req.body.gameId;
+                var balance = req.body.balance;
+                var username = req.body.userId;
 
-            if(!validator.validGameId(res, gameId, 'gameId')){
-                return;
+
+                httpConnections.getById('bingogames', gameId).then(function (gameResponse) {
+                    if(!validator.validGameId(res, gameId, gameResponse, 'gameId')){
+                        return;
+                    }
+
+                    if(!validator.integer(res, balance, 'balance')){
+                        return;
+                    }
+
+                    httpConnections.getByData('fakebingousers', {username:username}).then(function (accountResponse) {
+                        if(!validator.username(res, username, accountResponse, 'userId')){
+                            return;
+                        }
+
+                        httpConnections.getById('bingotickets', gameResponse[0].id).then(function (ticketResponse) {
+                            responseSenders.sendSecured(req, res, 'TicketBought', game.buyTicket(username, balance, gameResponse, accountResponse, ticketResponse));
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
-
-            if(!validator.integer(res, balance, 'balance')){
-                return;
-            }
-
-            if(!validator.username(res, username, 'userId')){
-                return;
-            }
-
-            responseSenders.sendSecured(req, res, 'TicketBought', game.buyTicket(username, balance));
         });
 
         app.post('/game/getcall', function(req, res) {

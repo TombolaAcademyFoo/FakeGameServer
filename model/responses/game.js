@@ -1,9 +1,10 @@
 (function () {
     'use strict';
     var config = require('../../config');
+    var httpConnections = require('../../express-middleware/http-connections');
 
-    var createUserResponse = function(username, balance){
-        return {username:username, balance: balance, token:config.user.token}
+    var createUserResponse = function(username, balance, accountData){
+        return {username:username, balance: balance, token:accountData[0].token}
     };
 
     var createLineWinner = function(){
@@ -21,9 +22,9 @@
         return {gameId: data[0].id, ticketPrice: config.game.ticketPrice, start: config.game.startTime()};
     };
 
-    module.exports.buyTicket = function(username, currentBalance){
-        var newBalance = currentBalance - config.game.ticketPrice;
-        return {gameId: config.game.id, card: config.game.card, user: createUserResponse(username, newBalance)};
+    module.exports.buyTicket = function(username, currentBalance, gameData, accountData, ticketData){
+            var newBalance = currentBalance - config.game.ticketPrice;
+            return {gameId: gameData[0].id, card: ticketData[0].ticket, user: createUserResponse(username, newBalance, accountData)};
     };
 
     module.exports.getCall = function(gameId, callNumber, username, balance){
