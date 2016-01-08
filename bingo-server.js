@@ -14,6 +14,11 @@
     logging(app);
     userLoginMiddleware(app);
     gameMiddleware(app);
+    connection.auth({username:'ta', password:'tombola123'}).then(function (response) {
+        connection.token = response.token;
+    }).catch(function (error) {
+        console.log(error);
+    });
 
     app.listen(30069, function(){
         console.log("express-winston demo listening on port %d in %s mode", this.address().port, app.settings.env);

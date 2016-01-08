@@ -21,8 +21,9 @@
                                 balance: response[i].balance,
                                 token: response[i].token
                             }});
+                            break;
                         }
-                        else {
+                        if (response[i].username !== req.body.username && i === response.length-1) {
                             responseSenders.sendError(res, 401);
                         }
                     }

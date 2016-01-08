@@ -21,7 +21,12 @@
 
             response.on('end', function () {
                 if(response.statusCode===200){
-                    deferred.resolve(JSON.parse(str).json);
+                    if(endpoint !== '/authenticate'){
+                        deferred.resolve(JSON.parse(str).json);
+                    }
+                    else{
+                        deferred.resolve(JSON.parse(str));
+                    }
                 }
                 else{
                     deferred.reject(str);
@@ -36,20 +41,24 @@
     };
 
     module.exports = {
-        getAll: function(tableName, token){
-            return performRequest('GET', '/api/' + tableName, token);
+        getAll: function(tableName){
+            return performRequest('GET', '/api/' + tableName, this.token);
         },
-        getById: function(tableName, id, token){
-            return performRequest('GET', '/api/' + tableName + '/' + id, token);
+        getById: function(tableName, id){
+            return performRequest('GET', '/api/' + tableName + '/' + id, this.token);
         },
-        add: function(tableName, token, data){
-            return performRequest('POST', '/api/' + tableName, token, data);
+        add: function(tableName, data){
+            return performRequest('POST', '/api/' + tableName, this.token, data);
         },
-        delete: function(tableName, id, token){
-            return performRequest('DELETE', '/api/' + tableName + '/' + id, token);
+        delete: function(tableName, id){
+            return performRequest('DELETE', '/api/' + tableName + '/' + id, this.token);
         },
-        update: function(tableName, id, token, data){
-            return performRequest('PUT', '/api/' + tableName + '/' + id, token, data);
-        }
+        update: function(tableName, id, data){
+            return performRequest('PUT', '/api/' + tableName + '/' + id, this.token, data);
+        },
+        auth: function(data) {
+            return performRequest('POST', '/authenticate', null, data);
+        },
+        token: ''
     }
 })();
