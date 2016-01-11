@@ -29,23 +29,23 @@
             }
             return true;
         },
-        validGameId: function(res, value, name){
+        validGameId: function(res, value, data, name){
             var valueAsNumber;
-            if(!this.integer(res,value, name)){
+            if(!this.integer(res,value, data, name)){
                 return false;
             }
             valueAsNumber = Number(value);
-            if(valueAsNumber !== config.game.id){
+            if(valueAsNumber !== data[0].id){
                 responseSenders.send400Error(res, 'Invalid Game Id');
                 return false;
             }
             return true;
         },
-        username : function(res, value, name){
-            if(!this.required(res,value, name)){
+        username : function(res, value, data, name){
+            if(!this.required(res,value, data, name)){
                 return false;
             }
-            if(value !== config.user.username){
+            if(value !== data[0].username){
                 responseSenders.send400Error(res, 'Invalid User Id');
                 return false;
             }
