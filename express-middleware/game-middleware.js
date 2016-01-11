@@ -60,39 +60,50 @@
         });
 
         app.post('/game/getcall', function(req, res) {
-            var gameId = req.body.gameId;
-            var callNumber = req.body.callnumber;
-            var balance = req.body.balance;
-            var username = req.body.userId;
+            if (req.body.gameId && req.body.callnumber && req.body.balance && req.body.userId) {
+                var gameId = req.body.gameId;
+                var callNumber = req.body.callnumber;
+                var balance = req.body.balance;
+                var username = req.body.userId;
+                var lineFound = req.body.lineFound;
+                var fullHouseFound = req.body.fullHouseFound;
 
-            if(!validator.validGameId(res, gameId, 'gameId')){
-                return;
-            }
+                httpConnections.getById('bingogames', gameId).then(function (gameResponse) {
+                    if(!validator.validGameId(res, gameId, gameResponse, 'gameId')){
+                        return;
+                    }
 
-            if(!validator.callNumber(res, callNumber, 'callnumber')){
-                return;
-            }
+                    if(!validator.callNumber(res, callNumber, 'callnumber')){
+                        return;
+                    }
+                    httpConnections.getByData('fakebingousers', {username:username}).then(function (accountResponse) {
+                        if(!validator.username(res, username, accountResponse, 'userId')){
+                            return;
+                        }
 
-            if(!validator.username(res, username, 'userId')){
-                return;
-            }
+                        if(!validator.integer(res, balance, 'balance')){
+                            return;
+                        }
 
-            if(!validator.integer(res, balance, 'balance')){
-                return;
-            }
+                        var response = game.getCall(gameId, callNumber, username, balance, lineFound, fullHouseFound, accountResponse);
 
-            var response = game.getCall(gameId, callNumber, username, balance);
-
-            if(response.winnerInfo){
-                if(response.winnerInfo.housewinnername){
-                    responseSenders.sendSecured(req, res, 'Winner', response );
-                }
-                else {
-                    responseSenders.sendSecured(req, res, 'Line', response );
-                }
-            }
-            else{
-                responseSenders.sendSecured(req, res, 'Call', response );
+                        if(response.winnerInfo){
+                            if(response.winnerInfo.housewinnername){
+                                responseSenders.sendSecured(req, res, 'Winner', response );
+                            }
+                            else {
+                                responseSenders.sendSecured(req, res, 'Line', response );
+                            }
+                        }
+                        else{
+                            responseSenders.sendSecured(req, res, 'Call', response );
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
         });
     };
